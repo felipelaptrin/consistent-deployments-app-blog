@@ -16,7 +16,7 @@ env:
   AWS_IAM_ROLE_OIDC_NAME: "GitHubActions"
   AWS_REGION: "us-east-1"
   ECR_REPO_NAME: "consistent-deployments"
-  INFRA_REPOSITORY_HTTPS: https://github.com/felipelaptrin/consistent-deployments-app-blog.git
+  INFRA_REPOSITORY_HTTPS: https://github.com/felipelaptrin/consistent-deployments-infra-blog.git
 
 jobs:
   build:
