@@ -19,9 +19,8 @@ env:
   INFRA_REPOSITORY_HTTPS: https://github.com/felipelaptrin/consistent-deployments-infra-blog.git
 
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -51,16 +50,26 @@ jobs:
           docker tag $ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
+  infra-pr:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - name: Checkout the infrastructure repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.INFRA_REPOSITORY_HTTPS }}
+          token: ${{ secrets.PAT_GITHUB_TOKEN }}
+          path: infra
+
       - name: Set up Git
         if: github.ref == 'refs/heads/main'
         run: |
-          git clone ${{ env.INFRA_REPOSITORY_HTTPS }} /tmp/infra
-          cd /tmp/infra
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
       - name: Update app_version (tfvars file)
         if: github.ref == 'refs/heads/main'
+        working-directory: infra
         env:
           VERSION: ${{ github.sha }}
         run: |
@@ -72,7 +81,7 @@ jobs:
         uses: peter-evans/create-pull-request@v4
         with:
             token: ${{ secrets.PAT_GITHUB_TOKEN }}
-            add-paths: infra
+            path: infra
             commit-message: Update application version to ${{ github.sha }}
             title: Update application version to ${{ github.sha }}
             body: This was created by Application CI/CD.
