@@ -65,8 +65,8 @@ jobs:
         env:
           VERSION: ${{ github.sha }}
         run: |
-          sed -i -E 's/(app_version\s*=\s*").*"/\1'"${VERSION}"'"/' infrastructure/dev/dev.tfvars
-          sed -i -E 's/(app_version\s*=\s*").*"/\1'"${VERSION}"'"/' infrastructure/prod/prod.tfvars
+          sed -i -E 's/(app_version\s*=\s*").*"/\1'"${VERSION}"'"/' dev/dev.tfvars
+          sed -i -E 's/(app_version\s*=\s*").*"/\1'"${VERSION}"'"/' prod/prod.tfvars
 
       - name: Create Pull Request
         if: github.ref == 'refs/heads/main'
