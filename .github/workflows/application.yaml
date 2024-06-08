@@ -58,7 +58,7 @@ jobs:
       - name: Checkout the infrastructure repository
         uses: actions/checkout@v4
         with:
-          repository: ${{ env.INFRA_REPOSITORY_HTTPS }}
+          repository: ${{ env.INFRA_REPOSITORY }}
           token: ${{ secrets.PAT_GITHUB_TOKEN }}
 
       - name: Set up Git
